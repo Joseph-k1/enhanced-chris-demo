@@ -5,7 +5,7 @@ import { money, type Msg } from "./ui";
  * portal, emails and calendar all read from it, so a booking made anywhere shows up everywhere, survives a reload and
  * syncs across browser tabs (storage event). Nothing is real: no server, no payments. */
 
-export type Mode = "book" | "mail" | "host" | "guest" | "pay";
+export type Mode = "book" | "mail" | "host" | "guest";
 export type Stage = "inquiry" | "approved" | "confirmed";
 export type ResStatus = "Pending inquiry" | "Approved · deposit due" | "Confirmed";
 
@@ -122,13 +122,13 @@ const create = (d: DB, b: Booking): DB => {
   return { ...d, seq: d.seq + 1, active: id, recs: [...d.recs, rec], threads: { ...d.threads, [id]: [{ from: "guest", text: b.note || "Hi! We'd love to book a private event.", at: "Just now", tag: "Inquiry" }] }, read: d.read.filter((x) => x !== id) };
 };
 const approveId = (d: DB, id: string, total: number, deposit: number): DB => {
-  const r = d.recs.find((x) => x.id === id); if (!r) return d;
+  const r = d.recs.find((x) => x.id === id); if (!r || r.stage !== "inquiry") return d;
   const b = { ...r.booking, total, deposit };
   return addMsg(patchRec(d, id, () => ({ booking: b, stage: "approved" })), id, approvedMsg(b), true);
 };
 const payId = (d: DB, id: string): DB => { const r = d.recs.find((x) => x.id === id); return r ? addMsg(patchRec(d, id, () => ({ stage: "confirmed", requests: SEED_REQS })), id, confirmedMsg()) : d; };
 const doApprove = (d: DB, total: number, deposit: number) => (d.active ? approveId(d, d.active, total, deposit) : d);
-const doPay = (d: DB) => (d.active ? payId(d, d.active) : d);
+const doPay = (d: DB) => { const r = d.recs.find((x) => x.id === d.active); return r && r.stage === "approved" ? payId(d, r.id) : d; };
 const ORDER: Stage[] = ["inquiry", "approved", "confirmed"];
 /** Jumping ahead fills in the first booking only, and never rewinds it. Later bookings stay as the guest left them. */
 const ensure = (d0: DB, min: Stage): DB => {
@@ -169,7 +169,7 @@ const toRes = (r: Rec): Res => {
 
 export function Provider({ children }: { children: ReactNode }) {
   const [db, setDb] = useState<DB>(load);
-  const [ui, setUi] = useState<UI>({ mode: "book", page: "form", selected: null, toast: "" });
+  const [ui, setUi] = useState<UI>({ mode: "book", page: "venue", selected: null, toast: "" });
   const last = useRef(JSON.stringify(db));
   const timer = useRef(0);
 
@@ -186,7 +186,7 @@ export function Provider({ children }: { children: ReactNode }) {
       if (d?.k === "reset") { try { localStorage.removeItem(KEY); } catch { /* ignore */ } last.current = JSON.stringify(EMPTY); setDb(EMPTY); }
       if (d?.k === "nav") {
         if (d.ensure) setDb((p) => ensure(p, d.ensure));
-        setUi((p) => ({ ...p, mode: d.mode, page: d.page ?? (d.mode === "host" ? "Overview" : d.mode === "guest" ? "My event" : "form"), selected: d.select ? "active" : null }));
+        setUi((p) => ({ ...p, mode: d.mode, page: d.page ?? (d.mode === "host" ? "Overview" : d.mode === "guest" ? "My event" : "venue"), selected: d.select ? "active" : null }));
       }
     };
     addEventListener("message", on);

@@ -4,7 +4,6 @@ import { Provider, useStore } from "./store";
 import { Book } from "./Book";
 import Mail from "./Mail";
 import Guest from "./Guest";
-import Checkout from "./Pay";
 import { CalendarView, Header, Overview, ReservationDetail, Reservations, Sidebar } from "./Host";
 import { CustomersView, EventsView, InsightsView, MessagesView, PaymentsView, SettingsView } from "./Pages";
 
@@ -39,7 +38,7 @@ function HostApp() {
     <Sidebar open={menu} setOpen={setMenu} navigate={navigate} />
     {menu && <button className="fixed inset-0 z-30 bg-[#071d32]/35 lg:hidden" onClick={() => setMenu(false)} aria-label="Close navigation" />}
     <main className="min-h-screen lg:pl-[230px]"><div className="mx-auto max-w-[1440px] px-4 py-6 sm:px-7 lg:px-8 lg:py-8">
-      {!s.selected && <Header title={title} subtitle={subtitle} setMenu={setMenu} onNew={() => s.goto("book")} />}
+      {!s.selected && <Header title={title} subtitle={subtitle} setMenu={setMenu} onNew={() => s.goto("venue")} />}
       {body}
     </div></main>
     {s.toast && <div className="fixed bottom-5 left-1/2 z-[60] flex -translate-x-1/2 items-center gap-2 rounded-xl bg-[#123b34] px-4 py-3 text-xs font-semibold text-white shadow-xl"><Icon name="check" size={15} />{s.toast}</div>}
@@ -51,7 +50,6 @@ function Root() {
   if (mode === "book") return <Book />;
   if (mode === "mail") return <Mail />;
   if (mode === "guest") return <Guest />;
-  if (mode === "pay") return <Checkout />;
   return <HostApp />;
 }
 

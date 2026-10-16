@@ -12,10 +12,10 @@ export default function Mail() {
         <Details rows={[["Event", b.event], ["Space", b.space], ["Date", dayLabel(b.day)], ["Time", b.time], ["Guests", String(b.guests)], ["Contact", `${b.email} · ${b.phone}`]]} />
         <p className="mt-4 text-[#5b6a78]">"{b.note}"</p><p className="mt-4">Review the request, set the price and send a deposit request in one click.</p></> },
     deposit: { account: b.email, from: "Kiki's La Quinta", fromAddr: "events@kikislaquinta.com", to: b.email, time: "Today, 10:20 AM", unreadBadge: 1,
-      subject: `Approved: ${b.event}. Your quote and payment link`, cta: "Open payment link", go: "pay",
-      body: <><p>Hi {first(b.name)},</p><p className="mt-3">Kiki's approved <b>{b.event}</b>. Here is the quote and what to pay now.</p>
+      subject: `Your request is approved: pay your ${money(b.deposit)} deposit`, cta: `Pay ${money(b.deposit)} deposit`, go: "pay",
+      body: <><p>Hi {first(b.name)},</p><p className="mt-3">Your request for <b>{b.event}</b> has been approved. Here is your quote.</p>
         <Details rows={[["Space", b.space], ["Date", `${dayLabel(b.day)}, ${b.time}`], ["Event total", money(b.total)], ["Deposit due now", `${money(b.deposit)} (${b.total ? Math.round((b.deposit / b.total) * 100) : 50}%)`], ["Remaining balance", `${money(Math.max(0, b.total - b.deposit))} due Oct ${b.day - 1}`]]} />
-        <p className="mt-4">The button below is your payment link. Pay the deposit to confirm the reservation.</p></> },
+        <p className="mt-4">Pay the deposit to open your event portal and secure the date.</p></> },
   }[page === "deposit" ? "deposit" : "hostNew"];
   return <div className="flex h-screen flex-col bg-[#eef1f5] text-[#1b2630]">
     <div className="flex items-center gap-3 border-b border-[#dde3ea] bg-white px-5 py-3 text-xs"><Icon name="mail" size={16} /><b>Inbox</b><span className="text-[#7c8794]">{mail.account}</span><span className="ml-auto rounded-full bg-[#e8f1ff] px-2.5 py-1 font-bold text-[#2f62b5]">{mail.unreadBadge} unread</span></div>
