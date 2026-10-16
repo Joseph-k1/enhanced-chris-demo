@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Chat, Icon, MetricCard, Status, calTone, money, moneyShort } from "./ui";
-import { CAL_SPACES, DEFAULT_GUESTS, MARKET, TODAY, first, hoursOf, owed, payLabel, priceOf, useStore, weekday, type Res } from "./store";
+import { CAL_SPACES, DEFAULT_GUESTS, MARKET, TODAY, first, hoursOf, owed, payLabel, priceOf, suggest, useStore, weekday, type Res } from "./store";
 import { img } from "./Book";
 
 const key = (r: Res) => `${r.day}-${r.guest}`;
@@ -23,7 +23,7 @@ export function Header({ title, subtitle, setMenu, onNew }: { title: string; sub
   return <header className="mb-7 flex items-start justify-between gap-4">
     <div className="flex items-start gap-3"><button onClick={() => setMenu(true)} className="mt-1 rounded-lg border border-[#dce5ef] bg-white p-2 text-[#18324d] lg:hidden" aria-label="Open navigation"><Icon name="menu" /></button><div><h1 className="text-[25px] font-bold tracking-[-0.035em] text-[#102b46] sm:text-[29px]">{title}</h1><p className="mt-1 text-xs text-[#8795a6] sm:text-sm">{subtitle}</p></div></div>
     <div className="flex items-center gap-2.5">
-      {(stage === "approved" || stage === "confirmed") && <button onClick={() => goto(stage === "approved" ? "pay" : "portal")} className="secondary-button hidden sm:inline-flex"><Icon name="link" size={14} />Open guest portal</button>}
+      {(stage === "approved" || stage === "confirmed") && <button onClick={() => goto(stage === "approved" ? "pay" : "portal")} className="secondary-button hidden sm:inline-flex"><Icon name="link" size={14} />{stage === "approved" ? "Open payment link" : "Open guest portal"}</button>}
       <button onClick={() => set({ page: "Messages", selected: null })} className="relative grid size-10 place-items-center rounded-xl border border-[#dde6ef] bg-white text-[#354b60] shadow-sm" aria-label="Notifications"><Icon name="bell" size={17} /><span className="absolute right-2 top-2 size-1.5 rounded-full bg-[#df5c5c]" /></button>
       <button onClick={onNew} className="hidden h-10 items-center gap-2 rounded-xl bg-[#dff6e9] px-4 text-xs font-bold text-[#1d624f] transition hover:bg-[#ccefdc] sm:flex"><Icon name="plus" size={15} />New booking</button>
     </div></header>;
@@ -141,7 +141,9 @@ export function ReservationDetail({ guest, onBack }: { guest: string; onBack: ()
   const s = useStore();
   const r = s.reservations.find((x) => x.id === guest) ?? s.reservations[0];
   const [tab, setTab] = useState("Overview");
-  const [total, setTotal] = useState(String(s.booking.total)); const [dep, setDep] = useState(String(s.booking.deposit));
+  const quote = suggest(r.guests);
+  const [total, setTotal] = useState(String(s.booking.total || quote.total));
+  const [dep, setDep] = useState(String(s.booking.deposit || quote.deposit));
   const [market, setMarket] = useState<string[]>([]); const [upgraded, setUpgraded] = useState(false);
   const live = !!r.live, stage = s.stage;
   const items = live ? s.addons : market;
@@ -157,11 +159,11 @@ export function ReservationDetail({ guest, onBack }: { guest: string; onBack: ()
   const payStatus = r.status === "Confirmed" ? (out === 0 ? "Paid in full" : "Deposit paid") : r.status === "Approved · deposit due" ? "Deposit requested" : "No payment requested";
 
   const review = live && stage === "inquiry" && <section className="card border-[#9ed8df] bg-[#f4fbfc] p-5">
-    <h2 className="section-title">Review inquiry</h2><p className="mt-1 text-xs text-[#6b7f92]">Kiki's does not publish a fixed price, so set the total and the deposit for {first(r.guest)}. We email the deposit request as soon as you approve.</p>
-    <div className="mt-5 grid gap-4 sm:grid-cols-3"><label className="form-label">Event price<input value={total} onChange={(e) => setTotal(e.target.value.replace(/\D/g, ""))} className="field mt-2 w-full" /></label><label className="form-label">Deposit due now<input value={dep} onChange={(e) => setDep(e.target.value.replace(/\D/g, ""))} className="field mt-2 w-full" /></label><div className="rounded-xl bg-white p-3 text-[11px] text-[#6b7f92]"><p className="font-bold uppercase">Balance later</p><p className="mt-1 text-sm font-bold text-[#17334d]">{money(Math.max(0, +total - +dep))}</p><p className="mt-0.5">due Oct {r.day - 1}</p></div></div>
+    <h2 className="section-title">Review inquiry</h2><p className="mt-1 text-xs text-[#6b7f92]">Kiki's does not publish a fixed price. The deposit starts at 50%. Change either number, then approve. We email {first(r.guest)} the quote and a payment link.</p>
+    <div className="mt-5 grid gap-4 sm:grid-cols-3"><label className="form-label">Event price<input value={total} onChange={(e) => { const v = e.target.value.replace(/\D/g, ""); setDep((d) => (d === String(Math.round((+total || 0) / 2)) ? String(Math.round((+v || 0) / 2)) : d)); setTotal(v); }} className="field mt-2 w-full" /></label><label className="form-label">Deposit due now<input value={dep} onChange={(e) => setDep(e.target.value.replace(/\D/g, ""))} className="field mt-2 w-full" /></label><div className="rounded-xl bg-white p-3 text-[11px] text-[#6b7f92]"><p className="font-bold uppercase">Balance later</p><p className="mt-1 text-sm font-bold text-[#17334d]">{money(Math.max(0, +total - +dep))}</p><p className="mt-0.5">due Oct {r.day - 1}</p></div></div>
     <div className="mt-5 flex flex-wrap gap-2"><button disabled={!+total || !+dep || +dep > +total} onClick={() => { s.approve(+total, +dep); s.toast_("Approved. Deposit request emailed to " + first(r.guest)); }} className="primary-button disabled:opacity-50">Approve & send deposit request</button><button onClick={() => s.toast_("Decline message drafted (demo)")} className="secondary-button">Decline</button></div></section>;
 
-  const approvedBanner = live && stage === "approved" && <section className="card flex flex-col gap-3 border-[#efd8a6] bg-[#fff9eb] p-5 sm:flex-row sm:items-center"><div className="flex-1"><h2 className="section-title">Deposit request sent</h2><p className="mt-1 text-xs text-[#8a6a2a]">{first(r.guest)} was emailed a request for {money(r.deposit)}. The date is held once it is paid.</p></div><button onClick={() => s.goto("mailGuest")} className="secondary-button">See guest email</button><button onClick={() => s.goto("pay")} className="primary-button">Open guest portal</button></section>;
+  const approvedBanner = live && stage === "approved" && <section className="card flex flex-col gap-3 border-[#efd8a6] bg-[#fff9eb] p-5 sm:flex-row sm:items-center"><div className="flex-1"><h2 className="section-title">Deposit request sent</h2><p className="mt-1 text-xs text-[#8a6a2a]">{first(r.guest)} was emailed a request for {money(r.deposit)}. The date is held once it is paid.</p></div><button onClick={() => s.goto("mailGuest")} className="secondary-button">See guest email</button><button onClick={() => s.goto("pay")} className="primary-button">Open payment link</button></section>;
 
   const outstanding = r.status === "Confirmed" && <section className="card p-5"><div className="flex items-center justify-between"><div><h2 className="section-title">Outstanding actions</h2><p className="mt-1 text-xs text-[#8896a6]">What still needs attention</p></div><span className="rounded-full bg-[#fff2d6] px-3 py-1 text-[10px] font-bold text-[#88611a]">{actions.length} open</span></div><div className="mt-4 divide-y divide-[#edf1f5]">{actions.map((a) => <div key={a.text} className="flex items-center gap-3 py-3 text-xs text-[#40546a]"><span className="size-1.5 rounded-full bg-[#e0a63d]" /><span className="flex-1">{a.text}</span>{a.key === "approveMenu" && <button onClick={() => { s.approveMenu(); s.toast_("Menu approved"); }} className="primary-button !min-h-8 !px-3">Approve</button>}{a.key === "approveRequests" && <button onClick={() => { s.approveRequests(); s.toast_("Requests approved"); }} className="primary-button !min-h-8 !px-3">Approve all</button>}</div>)}</div></section>;
 
@@ -177,7 +179,7 @@ export function ReservationDetail({ guest, onBack }: { guest: string; onBack: ()
   return <div>
     <button onClick={onBack} className="mb-5 flex items-center gap-2 text-xs font-bold text-[#567086]"><span className="rotate-180"><Icon name="arrow" size={15} /></span>Back to reservations</button>
     <div className="mb-6 flex flex-wrap items-start justify-between gap-4"><div><div className="flex flex-wrap items-center gap-3"><h1 className="text-[26px] font-bold tracking-[-0.035em] text-[#102b46]">Reservation · {r.guest}</h1><Status>{r.status}</Status></div><p className="mt-2 text-xs text-[#8795a5]">{weekday(r.day)}, Oct {r.day}, 2026 · {r.space} · {r.guests} guests</p></div>
-      <div className="flex gap-2">{live && stage !== "inquiry" && <button onClick={() => s.goto(stage === "approved" ? "pay" : "portal")} className="secondary-button"><Icon name="link" size={14} />Open guest portal</button>}<button onClick={exportSummary} className="secondary-button"><Icon name="download" size={14} />Export summary</button></div></div>
+      <div className="flex gap-2">{live && stage !== "inquiry" && <button onClick={() => s.goto(stage === "approved" ? "pay" : "portal")} className="secondary-button"><Icon name="link" size={14} />{stage === "approved" ? "Open payment link" : "Open guest portal"}</button>}<button onClick={exportSummary} className="secondary-button"><Icon name="download" size={14} />Export summary</button></div></div>
     <div className="mb-5 flex gap-1 overflow-auto rounded-xl border border-[#e0e8ef] bg-white p-1">{TABS.map((x) => <button key={x} onClick={() => setTab(x)} className={`min-w-24 rounded-lg px-4 py-2 text-[11px] font-bold ${tab === x ? "bg-[#e2f4f5] text-[#197c8b]" : "text-[#738293] hover:bg-[#f6f8fa]"}`}>{x}{x === "Requests" && live && s.requests.some((q) => q.status === "Pending") && <span className="ml-1.5 inline-block size-1.5 rounded-full bg-[#e95757]" />}</button>)}</div>
     {tab !== "Overview" ? content :
     <div className="grid gap-5 xl:grid-cols-[1fr_330px]"><div className="space-y-5">

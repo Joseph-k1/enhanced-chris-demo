@@ -38,7 +38,7 @@
 </header>
 <div id="wrap">
   <nav id="steps"></nav>
-  <div id="stage"><iframe id="app" src="app.html?v=2" title="Kiki's booking demo"></iframe></div>
+  <div id="stage"><iframe id="app" src="app.html?v=3" title="Kiki's booking demo"></iframe></div>
 </div>
 <footer>
   <button class="navbtn" id="prev">Back</button>
@@ -49,16 +49,17 @@
 /* The presenter shell. The app in the iframe keeps every booking in localStorage, so the
  * calendar, the guest portal and these emails all show the same reservation. */
 const SLIDES = [
-  { id: "book", name: "Guest requests a date", cap: "Avery fills in the event. Kiki's has no fixed price, so nothing is paid yet. A taken slot can't be booked.", app: { mode: "book", page: "form" } },
-  { id: "sent", name: "Request sent", cap: "The request is saved in this browser. Make another one and both stay on the calendar.", app: { mode: "book", page: "sent" } },
-  { id: "mailHost", name: "Kiki's gets the email", cap: "Jack's events inbox. The button opens the same request in the host workspace.", app: { mode: "mail", page: "hostNew", ensure: "inquiry" } },
-  { id: "review", name: "Jack sets the price", cap: "He confirms the total and the deposit. Approving emails Avery.", app: { mode: "host", page: "Reservations", select: true, ensure: "inquiry" } },
-  { id: "mailGuest", name: "Avery's deposit email", cap: "The price in this email is the one Jack just entered.", app: { mode: "mail", page: "deposit", ensure: "approved" } },
-  { id: "pay", name: "Avery pays the deposit", cap: "Paying confirms the date. The guest portal and the host calendar update together.", app: { mode: "guest", page: "Payments", ensure: "approved" } },
+  { id: "book", name: "Allison sends her request", cap: "Allison fills in her birthday reservation and submits it. Kiki's has no fixed price, so nothing is paid yet.", app: { mode: "book", page: "form" } },
+  { id: "sent", name: "Inquiry submitted", cap: "The request is saved in this browser. It is not confirmed, and nothing has been paid.", app: { mode: "book", page: "sent" } },
+  { id: "mailHost", name: "Kiki's gets the email", cap: "Jack's events inbox. The button opens Allison's inquiry in the host workspace.", app: { mode: "mail", page: "hostNew", ensure: "inquiry" } },
+  { id: "review", name: "Jack approves the quote", cap: "He can change the price. The deposit starts at 50%. Approve emails Allison the quote and a payment link.", app: { mode: "host", page: "Reservations", select: true, ensure: "inquiry" } },
+  { id: "mailGuest", name: "Allison gets the quote", cap: "The email has the approved quote, the payment breakdown, and the payment link.", app: { mode: "mail", page: "deposit", ensure: "approved" } },
+  { id: "pay", name: "Allison pays the deposit", cap: "She opens the payment link and pays the deposit. This is checkout, not the guest portal.", app: { mode: "pay", page: "checkout", ensure: "approved" } },
+  { id: "confirmed", name: "Reservation confirmed", cap: "Allison's reservation is confirmed and the deposit shows as received.", app: { mode: "pay", page: "confirmed", ensure: "confirmed" } },
+  { id: "hostbook", name: "It shows in the host portal", cap: "Jack sees Allison's confirmed reservation, the deposit paid, and the balance still due.", app: { mode: "host", page: "Reservations", select: true, ensure: "confirmed" } },
   { id: "calendar", name: "It lands on the calendar", cap: "Confirmed bookings hold the space. A new inquiry shows dashed, and doesn't block the date.", app: { mode: "host", page: "Calendar", ensure: "confirmed" } },
-  { id: "hostbook", name: "Paid and still outstanding", cap: "Open the reservation: guest, event, space, what's paid, and the next thing Jack has to do.", app: { mode: "host", page: "Reservations", select: true, ensure: "confirmed" } },
-  { id: "portal", name: "Avery's guest portal", cap: "Menu, requests, contract, guest list and the remaining balance. Jack sees the same updates.", app: { mode: "guest", page: "My event", ensure: "confirmed" } },
-  { id: "messages", name: "One shared conversation", cap: "A message Avery sends is waiting for Jack, and the reply shows up in her portal.", app: { mode: "host", page: "Messages", ensure: "confirmed" } },
+  { id: "portal", name: "Allison's guest portal", cap: "Kiki's venue, Allison's reservation, on the KneesUp guest portal. Jack sees the same updates.", app: { mode: "guest", page: "My event", ensure: "confirmed" } },
+  { id: "messages", name: "One shared conversation", cap: "A message Allison sends is waiting for Jack, and the reply shows up in her portal.", app: { mode: "host", page: "Messages", ensure: "confirmed" } },
 ];
 const app = document.getElementById("app");
 let i = Math.max(0, SLIDES.findIndex((s) => s.id === location.hash.slice(1)));

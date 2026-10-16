@@ -4,6 +4,7 @@ import { Provider, useStore } from "./store";
 import { Book } from "./Book";
 import Mail from "./Mail";
 import Guest from "./Guest";
+import Checkout from "./Pay";
 import { CalendarView, Header, Overview, ReservationDetail, Reservations, Sidebar } from "./Host";
 import { CustomersView, EventsView, InsightsView, MessagesView, PaymentsView, SettingsView } from "./Pages";
 
@@ -50,6 +51,7 @@ function Root() {
   if (mode === "book") return <Book />;
   if (mode === "mail") return <Mail />;
   if (mode === "guest") return <Guest />;
+  if (mode === "pay") return <Checkout />;
   return <HostApp />;
 }
 

@@ -5,13 +5,13 @@ import { money, type Msg } from "./ui";
  * portal, emails and calendar all read from it, so a booking made anywhere shows up everywhere, survives a reload and
  * syncs across browser tabs (storage event). Nothing is real: no server, no payments. */
 
-export type Mode = "book" | "mail" | "host" | "guest";
+export type Mode = "book" | "mail" | "host" | "guest" | "pay";
 export type Stage = "inquiry" | "approved" | "confirmed";
 export type ResStatus = "Pending inquiry" | "Approved · deposit due" | "Confirmed";
 
 export const TODAY = 6; // demo "today": Tuesday Oct 6, 2026, 10:00 AM
 export const DEMO_NOW = new Date(2026, 9, 6, 10, 0).getTime();
-const KEY = "kneesup-demo-db-v1";
+const KEY = "kneesup-demo-db-v2";
 
 export const KIKI = { name: "Kiki's La Quinta", addr: "46660 Washington Street, Suites 8-9, La Quinta, CA 92253", email: "events@kikislaquinta.com", phone: "(760) 777-8008" };
 export const SPACES = [
@@ -34,7 +34,7 @@ export type Step = { label: string; done: boolean };
 export type Rec = { id: string; booking: Booking; stage: Stage; contractSigned: boolean; headcount: boolean; balancePaid: boolean; menu: string | null; menuApproved: boolean; addons: string[]; guestList: Person[]; uploads: Upload[]; requests: Req[]; guestSeen: number };
 type DB = { recs: Rec[]; active: string | null; threads: Record<string, Msg[]>; read: string[]; seq: number };
 
-export const DEFAULT_BOOKING: Booking = { name: "Avery Johnson", email: "avery.johnson@email.com", phone: "(310) 555-0198", guests: 45, note: "Birthday dinner with family and friends. We'd love the disco ball room!", event: "Avery's Birthday", spaceId: "semi", space: SPACES[0].short, day: 10, time: "6:00–9:00 PM", total: 0, deposit: 0 };
+export const DEFAULT_BOOKING: Booking = { name: "Allison Johnson", email: "allison.johnson@email.com", phone: "(310) 555-0198", guests: 45, note: "Birthday dinner with family and friends. We'd love the disco ball room!", event: "Allison's Birthday", spaceId: "semi", space: SPACES[0].short, day: 10, time: "6:00–9:00 PM", total: 0, deposit: 0 };
 export const DEFAULT_GUESTS: Person[] = [
   { name: "Jamie Carter", email: "jamie@email.com", status: "Attending", diet: "Vegetarian" },
   { name: "Morgan Lee", email: "morgan@email.com", status: "Attending", diet: "No restrictions" },
@@ -48,7 +48,7 @@ export const SEED_REQS: Req[] = [
   { type: "Dietary restrictions", details: "Two vegetarian guests and one gluten-free guest.", date: "Oct 6, 9:58 AM", status: "Pending" },
 ];
 /** Suggested price for the host's approval form (Kiki's has no fixed prices). */
-export const suggest = (guests: number) => { const total = guests * 40; return { total, deposit: Math.round((total * 0.4) / 50) * 50 }; };
+export const suggest = (guests: number) => { const total = guests * 40; return { total, deposit: Math.round(total / 2) }; };
 
 const R = (day: number, guest: string, space: string, time: string, event: string, status: ResStatus, total: number, paid: number, guests: number, extra: Partial<Res> = {}): Res =>
   ({ id: guest, guest, email: guest.toLowerCase().replace(" ", ".") + "@email.com", day, space, time, event, status, total, deposit: Math.round(total / 2), paid, guests, ...extra });
