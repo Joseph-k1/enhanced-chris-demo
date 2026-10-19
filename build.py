@@ -10,7 +10,7 @@ if assets.exists():
     shutil.rmtree(assets)
 shutil.copytree(dist / "assets", assets)
 html = (dist / "index.html").read_text()
-html = html.replace('lang="<!-- figma:lang -->"', 'lang="en"').replace("<title><!-- figma:title --></title>", "<title>Kiki's booking</title>")
+html = html.replace('lang="<!-- figma:lang -->"', 'lang="en"').replace("<title><!-- figma:title --></title>", "<title>KneesUp Tavern booking</title>")
 for c in ["<!-- figma:head-start -->", "<!-- figma:head-end -->", "<!-- figma:body-start -->", "<!-- figma:body-end -->"]:
     html = html.replace(c, "")
 (root / "app.html").write_text(html)

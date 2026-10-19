@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Chat, Empty, Icon, MetricCard, Status, money } from "./ui";
-import { TICKETED, first, owed, payLabel, priceOf, useStore, type Res } from "./store";
+import { VENUE, TICKETED, first, owed, payLabel, priceOf, useStore, type Res } from "./store";
 
 const key = (r: Res) => r.id;
 
@@ -51,14 +51,14 @@ export function EventsView() {
   const { toast_ } = useStore();
   const [made, setMade] = useState(false);
   return <div className="space-y-5">
-    <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#d9ebee] bg-[#eef8f9] p-4"><p className="max-w-2xl text-xs leading-5 text-[#2c6773]"><b>Events are tickets Kiki's sells itself</b>, like Pasta Night. Private bookings such as Allison's Birthday are reservations, under Reservations and Calendar.</p><button onClick={() => { setMade(true); toast_("Event draft created (demo)"); }} className="primary-button"><Icon name="plus" size={14} />{made ? "Draft created" : "Create event"}</button></div>
+    <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#d9ebee] bg-[#eef8f9] p-4"><p className="max-w-2xl text-xs leading-5 text-[#2c6773]"><b>Events are tickets {VENUE.name} sells itself</b>, like a trivia night. Private bookings such as Allison's Birthday are reservations, under Reservations and Calendar.</p><button onClick={() => { setMade(true); toast_("Event draft created (demo)"); }} className="primary-button"><Icon name="plus" size={14} />{made ? "Draft created" : "Create event"}</button></div>
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{TICKETED.map((e) => <div key={e.name} className="card overflow-hidden"><div className="h-2 bg-[#5bb8c6]" /><div className="p-5"><div className="grid size-12 place-items-center rounded-xl bg-[#edf5f7] text-center"><span className="text-[10px] font-bold uppercase text-[#77909c]">Oct</span><span className="-mt-2 text-lg font-bold text-[#183750]">{e.day}</span></div><h3 className="mt-4 text-sm font-bold text-[#1d3851]">{e.name}</h3><p className="mt-1 text-xs text-[#65788b]">{e.space} · {e.time}</p><div className="mt-4 h-1.5 rounded-full bg-[#e6edf2]"><div className="h-full rounded-full bg-[#2fa7b8]" style={{ width: `${(e.sold / e.cap) * 100}%` }} /></div><div className="mt-2 flex justify-between text-[11px] text-[#8190a0]"><span>{e.sold} / {e.cap} tickets</span><b className="text-[#183750]">{money(e.sold * e.price)}</b></div></div></div>)}</div>
   </div>;
 }
 
 export function CustomersView({ openReservation }: { openReservation: (id: string) => void }) {
   const { reservations } = useStore();
-  return <section className="card overflow-hidden"><div className="border-b border-[#e6edf2] p-5"><h2 className="section-title">Customers</h2><p className="mt-1 text-xs text-[#8795a4]">Everyone who has booked or asked about a booking at Kiki's</p></div>
+  return <section className="card overflow-hidden"><div className="border-b border-[#e6edf2] p-5"><h2 className="section-title">Customers</h2><p className="mt-1 text-xs text-[#8795a4]">Everyone who has booked or asked about a booking at {VENUE.name}</p></div>
     {reservations.map((r) => <button key={key(r)} onClick={() => openReservation(r.id)} className="grid w-full gap-2 border-b border-[#e9eef2] px-5 py-4 text-left last:border-0 hover:bg-[#f8fafb] md:grid-cols-[1.4fr_1fr_100px_110px] md:items-center md:gap-4"><div className="flex items-center gap-3"><div className="grid size-9 place-items-center rounded-full bg-[#e4f1f2] text-[11px] font-bold text-[#276a73]">{r.guest.split(" ").map((x) => x[0]).join("")}</div><div><p className="text-xs font-bold text-[#263f57]">{r.guest}</p><p className="mt-1 text-[10px] text-[#8794a3]">{r.email}</p></div></div><p className="text-xs text-[#637588]">{r.event}</p><Status>{r.status}</Status><p className="text-xs font-bold text-[#1f3b53]">{priceOf(r)}</p></button>)}
   </section>;
 }
@@ -70,12 +70,12 @@ export function InsightsView() {
   return <div className="grid gap-4 sm:grid-cols-3">
     <MetricCard label="Confirmed reservations" value={String(confirmed.length)} note="holding a date in October" icon="calendar" tone="bg-[#e7f4f7] text-[#23869a]" />
     <MetricCard label="Average confirmed booking" value={money(avg)} note="event price, before add-ons" icon="card" tone="bg-[#e5f5eb] text-[#25755a]" />
-    <MetricCard label="Open inquiries" value={String(reservations.filter((r) => r.status === "Pending inquiry").length)} note="waiting on a price from Kiki's" icon="message" tone="bg-[#fff1db] text-[#a16b20]" />
+    <MetricCard label="Open inquiries" value={String(reservations.filter((r) => r.status === "Pending inquiry").length)} note={`waiting on a price from ${VENUE.name}`} icon="message" tone="bg-[#fff1db] text-[#a16b20]" />
   </div>;
 }
 
 export function SettingsView() {
-  return <section className="card max-w-2xl p-6"><h2 className="section-title">Kiki's La Quinta</h2><p className="mt-1 text-xs text-[#8795a4]">This workspace only ever shows Kiki's. Another venue's bookings cannot appear here.</p>
-    <dl className="mt-5 divide-y divide-[#eef1f4] text-sm">{[["Address", "46660 Washington Street, Suites 8-9, La Quinta, CA 92253"], ["Events email", "events@kikislaquinta.com"], ["Phone", "(760) 777-8008"], ["Owner", "Jack"], ["Hours", "Tue–Thu 4:30–8 PM · Fri–Sat 4:30–9 PM · Sun 4:30–8 PM · Closed Monday"]].map(([k, v]) => <div key={k} className="grid gap-1 py-3 sm:grid-cols-[140px_1fr]"><dt className="text-xs font-bold text-[#8290a0]">{k}</dt><dd>{v}</dd></div>)}</dl>
+  return <section className="card max-w-2xl p-6"><h2 className="section-title">{VENUE.name}</h2><p className="mt-1 text-xs text-[#8795a4]">This workspace shows {VENUE.name}, part of {VENUE.org}.</p>
+    <dl className="mt-5 divide-y divide-[#eef1f4] text-sm">{[["Organization", VENUE.org], ["Venue", VENUE.name], ["Address", VENUE.addr], ["Events email", VENUE.email], ["Phone", VENUE.phone], ["Owner", "Jack"], ["Hours", "Tue–Thu 4:30–8 PM · Fri–Sat 4:30–9 PM · Sun 4:30–8 PM · Closed Monday"]].map(([k, v]) => <div key={k} className="grid gap-1 py-3 sm:grid-cols-[140px_1fr]"><dt className="text-xs font-bold text-[#8290a0]">{k}</dt><dd>{v}</dd></div>)}</dl>
   </section>;
 }

@@ -1,17 +1,17 @@
 import { Icon, money } from "./ui";
-import { KIKI, dayLabel, first, useStore } from "./store";
+import { VENUE, dayLabel, first, useStore } from "./store";
 import { img } from "./Book";
 
 /* The three emails in the journey. Plain mock mail client, one button per email. */
 export default function Mail() {
   const { page, booking: b, goto } = useStore();
   const mail = {
-    hostNew: { account: KIKI.email, from: "KneesUp Venues", fromAddr: "no-reply@kneesupvenues.com", to: KIKI.email, time: "Today, 9:12 AM", unreadBadge: 1,
+    hostNew: { account: VENUE.email, from: "KneesUp Venues", fromAddr: "no-reply@kneesupvenues.com", to: VENUE.email, time: "Today, 9:12 AM", unreadBadge: 1,
       subject: `New reservation request: ${b.event} (${b.guests} guests)`, cta: "Review request", go: "review",
-      body: <><p>Hi Kiki's team,</p><p className="mt-3"><b>{b.name}</b> just sent a reservation request through your booking page.</p>
+      body: <><p>Hi {VENUE.name} team,</p><p className="mt-3"><b>{b.name}</b> just sent a reservation request through your booking page.</p>
         <Details rows={[["Event", b.event], ["Space", b.space], ["Date", dayLabel(b.day)], ["Time", b.time], ["Guests", String(b.guests)], ["Contact", `${b.email} · ${b.phone}`]]} />
         <p className="mt-4 text-[#5b6a78]">"{b.note}"</p><p className="mt-4">Review the request, set the price and send a deposit request in one click.</p></> },
-    deposit: { account: b.email, from: "Kiki's La Quinta", fromAddr: "events@kikislaquinta.com", to: b.email, time: "Today, 10:20 AM", unreadBadge: 1,
+    deposit: { account: b.email, from: VENUE.name, fromAddr: VENUE.email, to: b.email, time: "Today, 10:20 AM", unreadBadge: 1,
       subject: `Your request is approved: pay your ${money(b.deposit)} deposit`, cta: `Pay ${money(b.deposit)} deposit`, go: "pay",
       body: <><p>Hi {first(b.name)},</p><p className="mt-3">Your request for <b>{b.event}</b> has been approved. Here is your quote.</p>
         <Details rows={[["Space", b.space], ["Date", `${dayLabel(b.day)}, ${b.time}`], ["Event total", money(b.total)], ["Deposit due now", `${money(b.deposit)} (${b.total ? Math.round((b.deposit / b.total) * 100) : 50}%)`], ["Remaining balance", `${money(Math.max(0, b.total - b.deposit))} due Oct ${b.day - 1}`]]} />
@@ -28,9 +28,9 @@ export default function Mail() {
         <article className="mx-auto max-w-2xl rounded-2xl bg-white p-8 shadow-sm">
           <h1 className="text-xl font-bold">{mail.subject}</h1>
           <div className="mt-4 flex items-center gap-3 border-b border-[#eef1f4] pb-4 text-xs"><div className="grid size-9 place-items-center rounded-full bg-[#2a392c] text-white">{mail.from[0]}</div><div className="flex-1"><p className="font-bold">{mail.from} <span className="font-normal text-[#7c8794]">&lt;{mail.fromAddr}&gt;</span></p><p className="text-[#7c8794]">to {mail.to}</p></div><span className="text-[#7c8794]">{mail.time}</span></div>
-          <div className="py-6 text-sm leading-6 text-[#2f3b46]"><img src={img("kiki-logo.png")} alt="" width={44} height={44} className="mb-5 rounded-full" />{mail.body}</div>
+          <div className="py-6 text-sm leading-6 text-[#2f3b46]"><img src={img("tavern-logo.svg")} alt="" width={44} height={44} className="mb-5 rounded-full" />{mail.body}</div>
           <button onClick={() => goto(mail.go)} className="rounded-xl bg-[#153b5b] px-6 py-3.5 text-sm font-bold text-white hover:bg-[#0f2f4b]">{mail.cta}</button>
-          <p className="mt-6 border-t border-[#eef1f4] pt-4 text-[11px] text-[#9aa5b1]">Sent by KneesUp Venues on behalf of Kiki's La Quinta · Demo email</p>
+          <p className="mt-6 border-t border-[#eef1f4] pt-4 text-[11px] text-[#9aa5b1]">Sent by KneesUp Venues on behalf of {VENUE.name} · Demo email</p>
         </article>
       </main>
     </div>

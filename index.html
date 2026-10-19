@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Kiki's La Quinta · KneesUp booking demo</title>
+<!-- Venue name matches VENUE in app/src/store.tsx -->
+<title>KneesUp Tavern · KneesUp booking demo</title>
 <style>
   :root { --green:#2a392c; --ink:#16241c; --muted:#66756c; --line:#e3e8e4; }
   * { box-sizing:border-box }
@@ -31,14 +32,14 @@
 </head>
 <body>
 <header>
-  <b>Kiki's La Quinta</b>
+  <b>KneesUp Tavern</b>
   <span class="step">KneesUp booking demo · step <span id="num">1</span> of <span id="total"></span></span>
   <div class="spacer"></div>
   <button class="ghost" id="reset">Start over</button>
 </header>
 <div id="wrap">
   <nav id="steps"></nav>
-  <div id="stage"><iframe id="app" src="app.html?v=4" title="Kiki's booking demo"></iframe></div>
+  <div id="stage"><iframe id="app" src="app.html?v=5" title="KneesUp Tavern booking demo"></iframe></div>
 </div>
 <footer>
   <button class="navbtn" id="prev">Back</button>
@@ -49,11 +50,11 @@
 /* The presenter shell. The app in the iframe keeps every booking in localStorage, so the
  * calendar, the guest portal and these emails all show the same reservation. */
 const SLIDES = [
-  { id: "venue", name: "Kiki's microsite", cap: "Allison opens Kiki's venue page: photos, spaces, Book Space or Book Full Venue.", app: { mode: "book", page: "venue" } },
+  { id: "venue", name: "KneesUp Tavern microsite", cap: "Allison opens KneesUp Tavern venue page: photos, spaces, Book Space or Book Full Venue.", app: { mode: "book", page: "venue" } },
   { id: "book", name: "Pick a space and date", cap: "She chooses a space, Saturday October 10, and a time on the calendar.", app: { mode: "book", page: "wizard" } },
   { id: "checkout", name: "Reservation details", cap: "Her name, guests and event. Reserve Now sends the request. Nothing is paid yet.", app: { mode: "book", page: "details" } },
-  { id: "sent", name: "Inquiry submitted", cap: "The request is with Kiki's. It is not approved, and nothing has been paid.", app: { mode: "book", page: "sent" } },
-  { id: "mailHost", name: "Kiki's gets the email", cap: "Jack's events inbox. The button opens Allison's inquiry so he can quote it.", app: { mode: "mail", page: "hostNew", ensure: "inquiry" } },
+  { id: "sent", name: "Inquiry submitted", cap: "The request is with KneesUp Tavern. It is not approved, and nothing has been paid.", app: { mode: "book", page: "sent" } },
+  { id: "mailHost", name: "KneesUp Tavern gets the email", cap: "Jack's events inbox. The button opens Allison's inquiry so he can quote it.", app: { mode: "mail", page: "hostNew", ensure: "inquiry" } },
   { id: "review", name: "Jack approves the quote", cap: "He sets the price. Deposit starts at 50%. Approve emails Allison. She cannot pay before this.", app: { mode: "host", page: "Reservations", select: true, ensure: "inquiry" } },
   { id: "mailGuest", name: "Allison's approval email", cap: "Your request is approved. Pay the deposit. That button opens her event portal.", app: { mode: "mail", page: "deposit", ensure: "approved" } },
   { id: "pay", name: "Her event portal", cap: "Pay opens Allison's guest portal. Status shows approved, deposit due. She pays it here.", app: { mode: "guest", page: "Payments", ensure: "approved" } },

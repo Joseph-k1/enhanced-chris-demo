@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from "react";
 import { Icon } from "./ui";
-import { KIKI, SPACES, clash, dayLabel, spaceOf, useStore, type Booking, DEFAULT_BOOKING } from "./store";
+import { VENUE, SPACES, clash, dayLabel, spaceOf, useStore, type Booking, DEFAULT_BOOKING } from "./store";
 
 export const img = (f: string) => `img/${f}`;
 const NAVY = "#0f2c4c";
@@ -8,9 +8,9 @@ const ROOMS = SPACES.filter((s) => s.id !== "buyout");
 const SLOTS = ["4:30 PM", "5:00 PM", "6:00 PM", "7:00 PM", "8:00 PM", "9:00 PM"];
 const range = (a: number, b: number) => `${SLOTS[a].replace(/ [AP]M/, "")}–${SLOTS[b]}`;
 const DESC: Record<string, string> = {
-  semi: "Large-party dining beside the disco ball. Set for birthdays and rehearsal dinners of up to seventy-five.",
+  semi: "A private dining room for birthdays and rehearsal dinners of up to seventy-five.",
   main: "The long main dining room. A seated celebration for up to a hundred guests.",
-  patio: "The outdoor patio under the palms, for dinners that run into the evening.",
+  patio: "An outdoor patio for dinners that run into the evening.",
 };
 
 const Pbtn = ({ children, onClick, disabled, className = "" }: { children: ReactNode; onClick?: () => void; disabled?: boolean; className?: string }) =>
@@ -59,9 +59,9 @@ export function Book() {
         <div className="mx-auto flex max-w-[460px] flex-col items-center">
           <span className="grid size-24 place-items-center rounded-full bg-[rgba(16,185,129,.1)]"><span className="grid size-14 place-items-center rounded-full bg-[#10b981] text-white"><Icon name="check" size={28} /></span></span>
           <h1 className="mt-8 text-xl font-bold">Reservation Request Sent!</h1>
-          <p className="mt-3 text-sm leading-6 text-[#6b7280]">Thanks {booking.name.split(" ")[0]}. Your request with <b className="text-[#0f1f2e]">{KIKI.name}</b> is in. The host will review it and email you a quote. Nothing is paid yet.</p>
+          <p className="mt-3 text-sm leading-6 text-[#6b7280]">Thanks {booking.name.split(" ")[0]}. Your request with <b className="text-[#0f1f2e]">{VENUE.name}</b> is in. The host will review it and email you a quote. Nothing is paid yet.</p>
           <div className="mt-6 w-full rounded-2xl border border-[#e2e8f0] p-4 text-left text-sm"><p className="font-bold">{booking.event}</p><p className="mt-1 text-xs text-[#6b7280]">{booking.space} · {dayLabel(booking.day)} · {booking.time} · {booking.guests} guests</p></div>
-          <div className="mt-6 flex flex-wrap justify-center gap-3"><Pbtn onClick={() => go("mailHost")}>See what Kiki's receives</Pbtn><Obtn onClick={() => go("venue")}>Back to Home</Obtn></div>
+          <div className="mt-6 flex flex-wrap justify-center gap-3"><Pbtn onClick={() => go("mailHost")}>See what {VENUE.name} receives</Pbtn><Obtn onClick={() => go("venue")}>Back to Home</Obtn></div>
         </div>
         <p className="mx-auto mt-12 w-fit max-w-full rounded-lg bg-[#e6f4f7] px-4 py-3 text-left text-xs leading-5 text-[#1d8fa5]"><b>Note:</b> Have more questions? Contact support at support@kneesupvenues.com.</p>
       </div>
@@ -76,7 +76,7 @@ export function Book() {
       <div className="mx-auto max-w-[914px] px-5 pt-6">
         <Head step={2} />
         <div className="flex flex-col gap-6 rounded-3xl border border-[#e2e8f0] bg-white p-6">
-          <div><h2 className="m-0 text-base font-semibold">Confirm reservation details</h2><p className="mt-1.5 text-[13px] text-[#6b7280]">Review your reservation details. Kiki's will send a quote after they approve.</p></div>
+          <div><h2 className="m-0 text-base font-semibold">Confirm reservation details</h2><p className="mt-1.5 text-[13px] text-[#6b7280]">Review your reservation details. {VENUE.name} will send a quote after they approve.</p></div>
           <div className="grid gap-5 sm:grid-cols-2">
             <label className="flex flex-col gap-2 text-[13px] font-medium">Full Name<input className={field} value={f.name} onChange={(e) => up({ name: e.target.value })} placeholder="Enter your full name" /></label>
             <label className="flex flex-col gap-2 text-[13px] font-medium">Your email address<input className={field} type="email" value={f.email} onChange={(e) => up({ email: e.target.value })} placeholder="Enter your email" /></label>
@@ -104,11 +104,11 @@ export function Book() {
         <Head step={1} />
         <div className="flex flex-col gap-6 rounded-3xl border border-[#e2e8f0] bg-white p-6">
           <section><h2 className="m-0 text-sm font-semibold">Select venue</h2><p className="mb-3 mt-1 text-xs leading-4 text-[#6b7280]">Select a venue to book it in full, or pick a venue first then choose one space</p>
-            <div className="flex gap-3 overflow-x-auto p-0.5"><Pc on wide photo={img("kiki-dining.jpg")} name={KIKI.name} label="Selected" onClick={() => pick("buyout")} /></div>
+            <div className="flex gap-3 overflow-x-auto p-0.5"><Pc on wide photo={img("tavern-dining.jpg")} name={VENUE.name} label="Selected" onClick={() => pick("buyout")} /></div>
           </section>
           <div className="h-px bg-[#e2e8f0]" />
           <section><h2 className="m-0 text-sm font-semibold">Select space <em className="font-normal not-italic text-[#6b7280]">(optional)</em></h2>
-            <p className="mb-3 mt-1 text-xs leading-4 text-[#6b7280]">{buyout ? <><b>{KIKI.name}</b> is booked as a full venue. Choose a space below only if you want a single area instead.</> : <>Booking a single space at <b>{KIKI.name}</b>. Click the selected space again to switch back to full venue.</>}</p>
+            <p className="mb-3 mt-1 text-xs leading-4 text-[#6b7280]">{buyout ? <><b>{VENUE.name}</b> is booked as a full venue. Choose a space below only if you want a single area instead.</> : <>Booking a single space at <b>{VENUE.name}</b>. Click the selected space again to switch back to full venue.</>}</p>
             <div className="flex gap-3 overflow-x-auto p-0.5">{ROOMS.map((s) => <Pc key={s.id} on={f.spaceId === s.id} photo={img(s.img)} name={s.short} label={f.spaceId === s.id ? "Selected" : "Select"} onClick={() => pick(f.spaceId === s.id ? "buyout" : s.id)} />)}</div>
           </section>
           <div className="h-px bg-[#e2e8f0]" />
@@ -142,19 +142,19 @@ export function Book() {
   }
 
   return <div className="min-h-screen bg-[#f3f6fb] text-[#0f1f2e]">
-    <Top><div className="flex items-center gap-2.5 text-[13px] font-semibold"><img src={img("kiki-logo.png")} alt="" width={32} height={32} className="rounded-lg" />{KIKI.name}</div></Top>
-    <div className="h-[250px] overflow-hidden bg-[#0f2540]"><img src={img("kiki-dining.jpg")} alt="" className="size-full object-cover" /></div>
+    <Top><div className="flex items-center gap-2.5 text-[13px] font-semibold"><img src={img("tavern-logo.svg")} alt="" width={32} height={32} className="rounded-lg" />{VENUE.name}</div></Top>
+    <div className="h-[250px] overflow-hidden bg-[#0f2540]"><img src={img("tavern-dining.jpg")} alt="" className="size-full object-cover" /></div>
     <div className="mx-auto max-w-[720px] px-5 pt-[22px]">
       <div className="flex items-start justify-between gap-4 pb-3.5 max-[480px]:flex-col">
-        <div><h1 className="m-0 text-2xl font-semibold leading-tight">{KIKI.name}</h1><p className="mt-1.5 text-[15px] font-medium text-[#1d8fa5]">{KIKI.addr}</p></div>
+        <div><h1 className="m-0 text-2xl font-semibold leading-tight">{VENUE.name}</h1><p className="mt-1.5 text-[15px] font-medium text-[#1d8fa5]">{VENUE.addr}</p></div>
         <Pbtn onClick={() => { pick("buyout"); go("book"); }}>Book Full Venue</Pbtn>
       </div>
-      <p className="mb-3 text-sm leading-6 text-[#6b7280]">An Italian restaurant in La Quinta with a disco-ball dining room, a patio under the palms, and space for birthdays, rehearsal dinners and family milestones.</p>
+      <p className="mb-3 text-sm leading-6 text-[#6b7280]">A neighborhood tavern with a private dining room, a main room, and a patio for birthdays, rehearsal dinners and team dinners.</p>
       <div className="flex gap-10 pb-[18px] pt-1 max-[480px]:flex-col max-[480px]:gap-4"><div><span className="block text-xs font-medium text-[#6b7280]">Venue Est. Minimum</span><strong className="mt-1 block text-base">Contact for pricing</strong></div><div><span className="block text-xs font-medium text-[#6b7280]">Deposit Required</span><strong className="mt-1 block text-base">None until approved</strong></div></div>
       <div className="h-px bg-[#e2e8f0]" />
       <div className="flex items-center gap-2 py-3.5 text-[13px] text-[#6b7280]"><Icon name="calendar" size={16} /><b className="font-semibold text-[#1d8fa5]">Open</b><span>• Closes 9pm · Closed Monday</span></div>
       <div className="h-px bg-[#e2e8f0]" />
-      <div className="py-3.5 text-[13px] leading-[1.9] text-[#6b7280]"><b className="font-semibold text-[#1d8fa5]">Phone:</b> {KIKI.phone}<br /><b className="font-semibold text-[#1d8fa5]">Email:</b> {KIKI.email}</div>
+      <div className="py-3.5 text-[13px] leading-[1.9] text-[#6b7280]"><b className="font-semibold text-[#1d8fa5]">Phone:</b> {VENUE.phone}<br /><b className="font-semibold text-[#1d8fa5]">Email:</b> {VENUE.email}</div>
       <div className="h-px bg-[#e2e8f0]" />
       <div className="mt-1.5 flex gap-1.5 overflow-x-auto border-b border-[#e2e8f0]">{["Spaces", "Updates", "Photos", "Menu & Packages", "Upcoming Events", "More Info"].map((t, i) => <span key={t} className={`whitespace-nowrap px-3.5 py-3 text-[13px] ${i === 0 ? "border-b-2 font-semibold text-[#1d8fa5]" : "text-[#4b5563]"}`} style={i === 0 ? { borderColor: "#1d8fa5" } : undefined}>{t}</span>)}</div>
       <div className="flex flex-col gap-3.5 pt-[18px] pb-6">{ROOMS.map((s) => <article key={s.id} className="flex gap-5 rounded-3xl border border-[#e2e8f0] bg-white p-3.5 max-[760px]:flex-col">

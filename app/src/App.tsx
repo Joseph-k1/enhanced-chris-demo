@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Icon } from "./ui";
-import { Provider, useStore } from "./store";
+import { VENUE, Provider, useStore } from "./store";
 import { Book } from "./Book";
 import Mail from "./Mail";
 import Guest from "./Guest";
@@ -8,15 +8,15 @@ import { CalendarView, Header, Overview, ReservationDetail, Reservations, Sideba
 import { CustomersView, EventsView, InsightsView, MessagesView, PaymentsView, SettingsView } from "./Pages";
 
 const META: Record<string, [string, string]> = {
-  Overview: ["Good morning, Jack", "Here's what's happening at Kiki's La Quinta"],
-  Calendar: ["Reservation calendar", "Inquiries, holds and confirmed events across Kiki's spaces"],
+  Overview: ["Good morning, Jack", `Here's what's happening at ${VENUE.name}`],
+  Calendar: ["Reservation calendar", `Inquiries, holds and confirmed events across ${VENUE.name} spaces`],
   Reservations: ["Reservations", "Every guest, space and payment, including requests made a moment ago"],
-  Events: ["Events", "Ticketed nights hosted by Kiki's"],
+  Events: ["Events", `Ticketed nights hosted by ${VENUE.name}`],
   Customers: ["Customers", "Guests who have booked or asked about a booking"],
   Messages: ["Messages", "The same conversation the guest sees in their portal"],
   Payments: ["Payments", "What's paid, what's outstanding, and deposits still to come"],
   Insights: ["Insights", "October at a glance"],
-  Settings: ["Settings", "Kiki's venue details"],
+  Settings: ["Settings", `${VENUE.name} venue details`],
 };
 
 function HostApp() {

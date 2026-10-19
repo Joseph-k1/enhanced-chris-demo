@@ -11,14 +11,21 @@ export type ResStatus = "Pending inquiry" | "Approved · deposit due" | "Confirm
 
 export const TODAY = 6; // demo "today": Tuesday Oct 6, 2026, 10:00 AM
 export const DEMO_NOW = new Date(2026, 9, 6, 10, 0).getTime();
-const KEY = "kneesup-demo-db-v2";
+const KEY = "kneesup-demo-db-v3";
 
-export const KIKI = { name: "Kiki's La Quinta", addr: "46660 Washington Street, Suites 8-9, La Quinta, CA 92253", email: "events@kikislaquinta.com", phone: "(760) 777-8008" };
+/* Change this block to retarget the walkthrough. Shell title in index.html uses the same name. */
+export const VENUE = {
+  org: "KneesUp Hospitality",
+  name: "KneesUp Tavern",
+  addr: "120 Market Street, San Francisco, CA 94105",
+  email: "events@kneesuptavern.demo",
+  phone: "(415) 555-0148",
+};
 export const SPACES = [
-  { id: "semi", name: "Semi-Private Large Party Dining", short: "Semi-Private Dining", cap: 75, min: 12, img: "kiki-dining.jpg" },
-  { id: "main", name: "Main Dining Room", short: "Main Dining Room", cap: 100, min: 10, img: "kiki-salad.jpg" },
-  { id: "patio", name: "Outdoor Patio", short: "Outdoor Patio", cap: 40, min: 10, img: "kiki-sign.jpg" },
-  { id: "buyout", name: "Full Venue Buyout (Including Outdoor Patio)", short: "Full Venue Buyout", cap: 100, min: 40, img: "kiki-cocktails.jpg" },
+  { id: "semi", name: "Semi-Private Large Party Dining", short: "Semi-Private Dining", cap: 75, min: 12, img: "tavern-dining.jpg" },
+  { id: "main", name: "Main Dining Room", short: "Main Dining Room", cap: 100, min: 10, img: "tavern-food.jpg" },
+  { id: "patio", name: "Outdoor Patio", short: "Outdoor Patio", cap: 40, min: 10, img: "tavern-patio.jpg" },
+  { id: "buyout", name: "Full Venue Buyout (Including Outdoor Patio)", short: "Full Venue Buyout", cap: 100, min: 40, img: "tavern-bar.jpg" },
 ];
 export const spaceOf = (id: string) => SPACES.find((s) => s.id === id) ?? SPACES[0];
 export const CAL_SPACES = ["Semi-Private Dining", "Main Dining Room", "Outdoor Patio", "Full Venue Buyout"];
@@ -34,7 +41,7 @@ export type Step = { label: string; done: boolean };
 export type Rec = { id: string; booking: Booking; stage: Stage; contractSigned: boolean; headcount: boolean; balancePaid: boolean; menu: string | null; menuApproved: boolean; addons: string[]; guestList: Person[]; uploads: Upload[]; requests: Req[]; guestSeen: number };
 type DB = { recs: Rec[]; active: string | null; threads: Record<string, Msg[]>; read: string[]; seq: number };
 
-export const DEFAULT_BOOKING: Booking = { name: "Allison Johnson", email: "allison.johnson@email.com", phone: "(310) 555-0198", guests: 45, note: "Birthday dinner with family and friends. We'd love the disco ball room!", event: "Allison's Birthday", spaceId: "semi", space: SPACES[0].short, day: 10, time: "6:00–9:00 PM", total: 0, deposit: 0 };
+export const DEFAULT_BOOKING: Booking = { name: "Allison Johnson", email: "allison.johnson@email.com", phone: "(310) 555-0198", guests: 45, note: "Birthday dinner with family and friends. We'd love the private dining room!", event: "Allison's Birthday", spaceId: "semi", space: SPACES[0].short, day: 10, time: "6:00–9:00 PM", total: 0, deposit: 0 };
 export const DEFAULT_GUESTS: Person[] = [
   { name: "Jamie Carter", email: "jamie@email.com", status: "Attending", diet: "Vegetarian" },
   { name: "Morgan Lee", email: "morgan@email.com", status: "Attending", diet: "No restrictions" },
@@ -47,7 +54,7 @@ export const SEED_REQS: Req[] = [
   { type: "Seating arrangement", details: "Long banquet tables so everyone can sit near the birthday table.", date: "Oct 6, 9:42 AM", status: "Approved" },
   { type: "Dietary restrictions", details: "Two vegetarian guests and one gluten-free guest.", date: "Oct 6, 9:58 AM", status: "Pending" },
 ];
-/** Suggested price for the host's approval form (Kiki's has no fixed prices). */
+/** Suggested price for the host's approval form (the venue has no fixed prices). */
 export const suggest = (guests: number) => { const total = guests * 40; return { total, deposit: Math.round(total / 2) }; };
 
 const R = (day: number, guest: string, space: string, time: string, event: string, status: ResStatus, total: number, paid: number, guests: number, extra: Partial<Res> = {}): Res =>
@@ -65,23 +72,23 @@ export const SEED: Res[] = [
 ];
 
 export const MENUS = [
-  ["Family-style feast", "House focaccia, seasonal salads, Bucatini Cacio e Pepe and braised short rib, served to share."],
-  ["Preset three-course", "Choice of starter, pasta or entrée, and dessert. A seated, elegant service."],
-  ["Pizza & pasta party", "Handcrafted pizzas and hearty pastas for a relaxed, high-energy night."],
+  ["Family-style feast", "Bread, seasonal salads, roast chicken and vegetables, served to share."],
+  ["Preset three-course", "Choice of starter, main, and dessert. A seated dinner."],
+  ["Bar bites & boards", "Shared plates and a couple of pitchers for a relaxed night."],
 ];
 export const MARKET = [
   ["Signature cocktail package", 450, "Two house cocktails for every guest on arrival"],
-  ["Wine pairing flight", 380, "Sommelier-selected Italian and California pours"],
+  ["Wine pairing flight", 380, "A short flight of house reds and whites"],
   ["Cake & dessert service", 220, "Plating, candles and cake cutting by our team"],
-  ["DJ & dance floor", 900, "Four-hour set under the disco ball"],
+  ["DJ & dance floor", 900, "Four-hour set in the main room"],
   ["Photo booth", 650, "Three hours, attendant and a digital gallery"],
   ["Florals & decor styling", 425, "Table florals and custom entry styling"],
 ] as const;
 export const TICKETED = [
-  { name: "Pasta Night & Disco", day: 9, time: "7:00 PM", sold: 52, cap: 60, price: 65, space: "Main Dining Room" },
-  { name: "Italian Wine Dinner", day: 15, time: "6:30 PM", sold: 28, cap: 40, price: 95, space: "Semi-Private Dining" },
-  { name: "Aperitivo on the Patio", day: 23, time: "5:00 PM", sold: 24, cap: 40, price: 35, space: "Outdoor Patio" },
-  { name: "Halloween Disco Ball", day: 31, time: "8:00 PM", sold: 71, cap: 100, price: 45, space: "Full Venue Buyout" },
+  { name: "Trivia & Tavern Night", day: 9, time: "7:00 PM", sold: 52, cap: 60, price: 65, space: "Main Dining Room" },
+  { name: "Wine Dinner", day: 15, time: "6:30 PM", sold: 28, cap: 40, price: 95, space: "Semi-Private Dining" },
+  { name: "Patio Happy Hour", day: 23, time: "5:00 PM", sold: 24, cap: 40, price: 35, space: "Outdoor Patio" },
+  { name: "Harvest Supper", day: 31, time: "8:00 PM", sold: 71, cap: 100, price: 45, space: "Full Venue Buyout" },
 ];
 
 export const first = (n: string) => n.split(" ")[0];
