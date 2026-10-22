@@ -7,9 +7,12 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "format": "oxfmt"
+    "format": "oxfmt",
+    "build:guide": "vite build --config vite.guide.config.ts",
+    "check:guide": "tsc --noEmit --strict --skipLibCheck --jsx react-jsx --moduleResolution bundler --module esnext --target es2022 --lib es2022,dom src/guidance/Guide.tsx"
   },
   "dependencies": {
+    "motion": "^14.5.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
