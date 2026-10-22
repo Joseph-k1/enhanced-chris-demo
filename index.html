@@ -29,6 +29,7 @@
   footer .navbtn.primary { border-color:var(--green); background:var(--green); color:#fff }
   @media (max-width: 860px) { nav { display:none } }
 </style>
+<link rel="stylesheet" href="guidance-assets/guide.css?v=20261022-toggle-motion" />
 </head>
 <body>
 <header>
@@ -89,5 +90,8 @@ document.getElementById("next").onclick = () => go(i + 1);
 document.getElementById("reset").onclick = () => { app.contentWindow.postMessage({ k: "reset" }, "*"); setTimeout(() => go(0), 40); };
 paint();
 </script>
+<!-- Additive guidance only; original presenter and embedded app remain intact. -->
+<div id="ku-guidance"></div>
+<script type="module" src="guidance-assets/guide.js?v=20261022-toggle-motion"></script>
 </body>
 </html>

@@ -1,0 +1,32 @@
+/* Scoped coachmark styling. Joseph's application and its real focus indicators are untouched. */
+#ku-guidance{position:fixed;inset:0;z-index:100;pointer-events:none;font:14px/1.5 "Segoe UI",system-ui,sans-serif;color:#202522}
+#ku-guidance *{box-sizing:border-box}
+.ku-guide-toggle{position:fixed;display:flex;align-items:center;justify-content:space-between;gap:8px;pointer-events:auto;border:0;border-radius:8px;background:#2a392c;color:#fff;padding:5px 10px;font:inherit;font-size:12px;cursor:pointer}
+.ku-guide-card{position:fixed;pointer-events:auto;border:1px solid #39413b;background:#202321;color:#fff;border-radius:12px;box-shadow:0 4px 16px #16241c24;isolation:isolate}
+.ku-guide-content{position:relative;z-index:1;padding:20px;border-radius:inherit;background:#202321;max-height:calc(100dvh - 130px);overflow:auto}
+.ku-guide-meta{display:flex;align-items:center;gap:10px;padding-right:24px;font-size:12px;line-height:20px}
+.ku-guide-role{display:inline-flex;align-items:center;flex-shrink:0;padding:2px 9px;border-radius:7px;background:#39443c;color:#e6eee7;font-weight:600}
+.ku-guide-progress{color:#d2d8d3;font-weight:400;font-variant-numeric:tabular-nums}
+.ku-guide-card h2{font:650 16px/1.35 "Segoe UI",system-ui,sans-serif;margin:13px 0 8px;text-wrap:balance}
+.ku-guide-card p{margin:0;color:#e3e7e4;font-size:14px;line-height:1.55;text-wrap:pretty}
+.ku-guide-card strong{font-weight:600;color:#fff}
+.ku-guide-close{position:absolute;right:5px;top:9px;width:40px;height:40px;display:grid;place-items:center;padding:0;border:0;background:transparent;color:#c8cfca;font:400 25px/1 "Segoe UI",system-ui,sans-serif;cursor:pointer;border-radius:8px}
+.ku-guide-close:hover{color:#fff;background:#39413b}
+.ku-guide-links{display:flex;flex-direction:column;align-items:flex-start;gap:4px}
+.ku-guide-links:has(button){margin-top:12px}
+.ku-guide-links button{min-height:32px;padding:5px 0;border:0;background:none;color:#dcebdd;text-align:left;font:600 13px/1.5 "Segoe UI",system-ui,sans-serif;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+#ku-guidance button:focus-visible{outline:2px solid #365f40;outline-offset:3px}
+#ku-guidance .ku-guide-card button:focus-visible{outline-color:#c6dfcb}
+@media(max-width:580px){.ku-guide-toggle{font-size:11px;padding:4px 6px}.ku-guide-content{padding:16px}.ku-guide-meta{gap:8px}.ku-guide-close{top:5px;right:1px}}
+@media(prefers-reduced-motion:reduce){#ku-guidance *{animation:none!important;transition:none!important}}
+
+.ku-guide-toggle input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.ku-guide-switch-track{display:block;flex-shrink:0;width:30px;height:18px;border:1px solid #a8b3aa;border-radius:999px;background:#536056;padding:2px;pointer-events:none}
+.ku-guide-switch-track>span{display:block;width:12px;height:12px;border-radius:50%;background:#fff}
+.ku-guide-toggle:has(input:focus-visible){outline:2px solid #c6dfcb;outline-offset:3px}
+
+/* Decorative target marker: never captures clicks or keyboard focus. */
+.ku-guide-beacon{position:fixed;width:16px;height:16px;transform:translate(-50%,-50%);pointer-events:none}
+.ku-guide-beacon-halo{position:absolute;inset:0;border-radius:50%;background:#20232120}
+.ku-guide-beacon-dot{position:absolute;left:2px;top:2px;width:12px;height:12px;border:2px solid #fff;border-radius:50%;background:#202321}
+@media(prefers-reduced-motion:reduce){.ku-guide-beacon-halo{transform:none!important}}
